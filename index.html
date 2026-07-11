@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+                            <!DOCTYPE html>
 <html lang="am">
 <head>
     <meta charset="UTF-8">
@@ -119,7 +119,6 @@
             font-size: 12px;
         }
 
-        /* Cart Floating Bar */
         .cart-bar {
             position: fixed;
             bottom: 0;
@@ -137,7 +136,6 @@
             box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -326,8 +324,7 @@
                 <span class="close-btn" onclick="closeCart()">&times;</span>
             </div>
             
-            <div id="cart-items-container">
-                </div>
+            <div id="cart-items-container"></div>
 
             <div class="billing-form">
                 <h3>የክፍያ እና የማድረሻ መረጃ</h3>
@@ -338,7 +335,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="fayda-phone">የስልክ ቁጥር (ለፋይዳ/ክፍያ ማረጋገጫ የሚያገለግል)</label>
+                    <label for="fayda-phone">የስልክ ቁጥር (ለክፍያ ማረጋገጫ የሚያገለግል)</label>
                     <input type="tel" id="fayda-phone" placeholder="+2519..." required>
                 </div>
 
@@ -355,18 +352,17 @@
 
     <script>
         // --- 1. የFIREBASE መረጃ ማስተካከያ ክፍል ---
-        // እባክህ እነዚህን መረጃዎች በራስህ የFirebase ፕሮጀክት ቅንብር ተካቸው!
         const firebaseConfig = {
-            apiKey: "YOUR_FIREBASE_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyCm6vPlapGOIn95I3NER6t1g3FHR1xKI3g",
+            authDomain: "adane-hotel.firebaseapp.com",
+            databaseURL: "https://adane-hotel-default-rtdb.firebaseio.com",
+            projectId: "adane-hotel",
+            storageBucket: "adane-hotel.firebasestorage.app",
+            messagingSenderId: "92228467802",
+            appId: "1:92228467802:web:609bc388c80ca75b77ec63",
+            measurementId: "G-RX5ZNTXY9D"
         };
 
-        // Firebase-ን ማስጀመር (Initialize)
         if (!firebase.apps.length) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -374,9 +370,9 @@
         const database = firebase.database();
         const storage = firebase.storage();
 
-        // --- 2. የቴሌግራም ቦት መረጃ ---
-        const TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN';
-        const TELEGRAM_CHAT_ID = 'YOUR_TELEGRAM_CHAT_ID';
+        // --- 2. የቴሌግራም ቦት መረጃ (በአማኑኤል ቦት ቶከን የተተካ) ---
+        const TELEGRAM_BOT_TOKEN = '8946873289:AAHcg_T-YKH9inigawSa_ZqD9S3EwUunY9w'; 
+        const TELEGRAM_CHAT_ID = '8946873289'; // አስተውል፡ ይህ የቦቱ መለያ ነው፣ የአንተን የግል Chat ID ለማግኘት ከታች ያለውን መመሪያ አንብብ
 
         // --- 3. የካርት (Cart) ሲስተም ጃቫስክሪፕት ---
         let cart = [];
@@ -466,7 +462,6 @@
             const file = qrFileInput.files[0];
             const orderId = 'ORD_' + Date.now();
             
-            // 1. ፎቶውን ወደ Firebase Storage መጫን
             const storageRef = storage.ref('fayda_qr_codes/' + orderId + '_' + file.name);
             const uploadTask = storageRef.put(file);
 
@@ -479,12 +474,9 @@
                     loadingText.style.display = 'none';
                 }, 
                 () => {
-                    // 2. የተጫነው ፎቶ ሊንክ (URL) ማውጣት
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        
                         let totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                         
-                        // የትዕዛዝ መረጃ መዋቅር
                         const orderData = {
                             orderId: orderId,
                             customerName: name,
@@ -496,14 +488,12 @@
                             timestamp: firebase.database.ServerValue.TIMESTAMP
                         };
 
-                        // 3. መረጃውን ወደ Realtime Database ማስቀመጥ
                         database.ref('orders/' + orderId).set(orderData, (error) => {
                             if (error) {
                                 alert("ትዕዛዙን መመዝገብ አልተቻለም: " + error.message);
                                 submitBtn.disabled = false;
                                 loadingText.style.display = 'none';
                             } else {
-                                // 4. ወደ ቴሌግራም ቦት ማሳወቂያ መላክ
                                 sendTelegramNotification(orderData);
                             }
                         });
@@ -513,16 +503,15 @@
         }
 
         function sendTelegramNotification(order) {
-            let itemsText = order.items.map(i => `- ${i.name} (x${i.quantity})`).join('\\n');
+            let itemsText = order.items.map(i => `- ${i.name} (x${i.quantity})`).join('\n');
             
-            let message = `🔔 *አዲስ ትዕዛዝ ደርሷል!*\\n\\n`;
-            message += `🆔 *ትዕዛዝ መለያ:* \`${order.orderId}\`\\n`;
-            message += `👤 *ደንበኛ:* ${order.customerName}\\n`;
-            message += `📞 *ስልክ ቁጥር:* ${order.customerPhone}\\n\\n`;
-            message += `🛍️ *የታዘዙ እቃዎች:*\\n${itemsText}\\n\\n`;
-            message += `💰 *ጠቅላላ ክፍያ:* ${order.totalAmount} ETB\\n`;
-            message += `🖼️ *የፋይዳ QR ሊንክ:* [ፎቶውን እዚህ ይክፈቱ](${order.faydaQrUrl})\\n`;
-            message += `\\n⚠️ *ያስተውሉ:* ይህንን ትዕዛዝ ለማጽደቅ ወደ አድሚን ገጽዎ ይግቡ።`;
+            let message = `🔔 *አዲስ ትዕዛዝ ደርሷል!*\n\n`;
+            message += `🆔 *ትዕዛዝ መለያ:* \`${order.orderId}\`\n`;
+            message += `👤 *ደንበኛ:* ${order.customerName}\n`;
+            message += `📞 *ስልክ ቁጥር:* ${order.customerPhone}\n\n`;
+            message += `🛍️ *የታዘዙ እቃዎች:*\n${itemsText}\n\n`;
+            message += `💰 *ጠቅላላ ክፍያ:* ${order.totalAmount} ETB\n`;
+            message += `🖼️ *የክፍያ/QR ፎቶ ሊንክ:* [ፎቶውን እዚህ ይክፈቱ](${order.faydaQrUrl})\n`;
 
             const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
             
@@ -562,3 +551,4 @@
     </script>
 </body>
 </html>
+                                        
