@@ -13,10 +13,10 @@
         :root {
             --primary-gold: #dfb15b;
             --dark-bg: #111111;
-            --light-bg: #f7f5f0;
-            --text-dark: #2c3e50;
-            --card-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            --tab-bg: #1e1e1e;
+            --active-tab-bg: #2d2d2d;
             --card-bg: #1e1e1e;
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         * {
@@ -27,114 +27,167 @@
         }
 
         body {
-            background-color: #0a0a0a;
-            color: #ffffff;
+            background-color: #f9f8f6;
+            color: #2c3e50;
             padding-bottom: 80px;
         }
 
-        /* ፎቶ 1000008240.jpg ላይ ያለውን ትክክለኛ ሄደር ለመመለስ */
+        /* ሄደር ከፎቶው ላይ እንዳለው (1000008241.jpg) */
         header {
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000') no-repeat center center/cover;
-            height: 320px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200') no-repeat center center/cover;
+            height: 280px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 20px;
+            color: #ffffff;
         }
 
         header h1 {
+            color: #ffffff;
+            font-size: 24px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        header .hero-title {
             color: var(--primary-gold);
-            font-size: 32px;
+            font-size: 36px;
             font-weight: bold;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.9);
         }
 
         header p {
-            font-size: 16px;
+            font-size: 15px;
             color: #ffffff;
-            text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+            max-width: 90%;
+        }
+
+        /* አራቱ ዋና ዋና ታቦች (Tabs Grid) */
+        .tabs-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background-color: var(--tab-bg);
+            border-bottom: 3px solid var(--primary-gold);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #a0a0a0;
+            padding: 15px 5px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .tab-btn .icon {
+            font-size: 20px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-gold);
+            background-color: #ffffff;
+            border-bottom: 4px solid var(--primary-gold);
+            margin-bottom: -3px;
         }
 
         .container {
-            padding: 20px 15px;
             max-width: 600px;
             margin: 0 auto;
+            padding: 20px 15px;
         }
 
-        /* የድሮው ወርቃማው መስመር እና ዲዛይን */
-        .section-title {
-            color: var(--primary-gold);
-            margin: 25px 0 15px 0;
-            border-left: 4px solid var(--primary-gold);
-            padding-left: 12px;
-            font-size: 20px;
+        .section-headline {
+            text-align: center;
+            margin: 20px 0 25px 0;
+        }
+
+        .section-headline h2 {
+            font-size: 26px;
+            color: #111111;
+            margin-bottom: 8px;
             font-weight: bold;
         }
 
-        .menu-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .section-headline p {
+            color: #666;
+            font-size: 15px;
         }
 
-        /* የካርዶቹ ትክክለኛ የድሮ መልክ */
-        .menu-item {
-            background-color: var(--card-bg);
+        /* የይዘት ክፍሎች መደበቂያ */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* የካርዶቹ አቀማመጥ እና ዲዛይን */
+        .item-card {
+            background-color: #ffffff;
             border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #222;
-            display: flex;
-            align-items: center;
-            padding: 15px;
-            box-shadow: var(--card-shadow);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            border: 1px solid #eaeaea;
         }
 
-        .menu-item img {
-            width: 90px;
-            height: 90px;
+        .item-card img {
+            width: 100%;
+            height: 220px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-right: 15px;
         }
 
-        .menu-details {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
+        .item-body {
+            padding: 20px;
         }
 
-        .menu-details h3 {
+        .item-body h3 {
+            font-size: 20px;
+            color: #111111;
+            margin-bottom: 6px;
+        }
+
+        .item-body .price {
+            color: #b3862b;
+            font-weight: bold;
             font-size: 18px;
-            color: #ffffff;
-            margin-bottom: 5px;
-            font-weight: 600;
+            margin-bottom: 12px;
         }
 
-        .menu-details .price {
-            color: var(--primary-gold);
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        .add-btn {
-            background-color: var(--primary-gold);
-            color: #000000;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
+        .item-body p {
+            color: #666;
             font-size: 14px;
-            align-self: flex-start;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .order-btn {
+            background-color: #111111;
+            color: var(--primary-gold);
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
             transition: background 0.2s;
         }
 
-        .add-btn:hover {
-            background-color: #c99f4f;
+        .order-btn:hover {
+            background-color: #222222;
         }
 
         /* Floating Cart Bar */
@@ -143,8 +196,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: var(--primary-gold);
-            color: #000000;
+            background-color: #111111;
+            color: var(--primary-gold);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
@@ -154,6 +207,7 @@
             z-index: 1000;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
             font-size: 16px;
+            border-top: 2px solid var(--primary-gold);
         }
 
         /* Modal Settings */
@@ -171,51 +225,52 @@
         }
 
         .modal-content {
-            background-color: #161616;
-            border: 1px solid var(--primary-gold);
+            background-color: #ffffff;
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
             max-width: 500px;
-            margin: 30px auto;
+            margin: 20px auto;
+            color: #2c3e50;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #eee;
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
 
         .modal-header h2 {
-            color: var(--primary-gold);
-            font-size: 18px;
+            color: #111;
+            font-size: 20px;
         }
 
         .close-btn {
-            color: #ffffff;
-            font-size: 26px;
+            color: #aaa;
+            font-size: 28px;
             cursor: pointer;
         }
 
         .cart-item-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #2a2a2a;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
             font-size: 15px;
+            color: #333;
         }
 
         .billing-form {
             margin-top: 20px;
-            border-top: 2px dashed #333;
+            border-top: 2px dashed #ddd;
             padding-top: 15px;
         }
 
         .billing-form h3 {
-            color: var(--primary-gold);
+            color: #111;
             font-size: 16px;
             margin-bottom: 12px;
         }
@@ -226,31 +281,32 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
             font-size: 14px;
-            color: #ccc;
+            color: #555;
+            font-weight: 500;
         }
 
         .form-group input {
             width: 100%;
             padding: 12px;
             border-radius: 6px;
-            border: 1px solid #444;
-            background-color: #222;
-            color: white;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #333;
             font-size: 15px;
         }
 
         .form-group input[type="file"] {
-            padding: 5px;
-            background-color: #111;
+            padding: 8px;
             border: 1px dashed var(--primary-gold);
+            background-color: #fdfbf7;
         }
 
         .submit-btn {
             width: 100%;
-            background-color: var(--primary-gold);
-            color: black;
+            background-color: #111111;
+            color: var(--primary-gold);
             border: none;
             padding: 14px;
             border-radius: 6px;
@@ -261,14 +317,14 @@
         }
 
         .submit-btn:disabled {
-            background-color: #555;
+            background-color: #ccc;
             color: #888;
             cursor: not-allowed;
         }
 
         #loading {
             display: none;
-            color: var(--primary-gold);
+            color: #b3862b;
             text-align: center;
             margin-top: 10px;
             font-weight: bold;
@@ -279,62 +335,124 @@
 <body>
 
     <header>
-        <h1>አዳነ ኢንተርናሽናል ሆቴል</h1>
-        <p>የምርጥ ምግቦች እና መጠጦች ማዘዣ ገጽ</p>
+        <h1>ADANE INTERNATIONAL HOTEL</h1>
+        <div class="hero-title">ክፍያ ሲስተም</div>
+        <p>የሚፈልጉትን አገልግሎት ይምረጡ፤ በቴሌብር ወይም በባንክ ፈጣን ክፍያ ይፈጽሙ</p>
     </header>
 
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="switchTab('rooms')">
+            <span class="icon">🛏️</span>
+            <span>መኝታ ክፍሎች</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('restaurant')">
+            <span class="icon">🍔</span>
+            <span>ሬስቶራንት & ሜኑ</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('pool')">
+            <span class="icon">🏊‍♂️</span>
+            <span>የመዋኛ ገንዳ</span>
+        </button>
+        <button class="tab-btn" onclick="switchTab('spa')">
+            <span class="icon">💆‍♂️</span>
+            <span>ማሳጅ & ስፓ</span>
+        </button>
+    </div>
+
     <div class="container">
-        <div class="section-title">የተመረጡ ምግቦች</div>
-        <div class="menu-grid">
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200" alt="ልዩ በየአይነቱ">
-                <div class="menu-details">
-                    <h3>ልዩ በየአይነቱ</h3>
-                    <div class="price">250 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ልዩ በየአይነቱ', 250)">ወደ ካርት ጨምር</button>
+        
+        <div id="rooms" class="tab-content active">
+            <div class="section-headline">
+                <h2>የመኝታ ክፍሎች ማስያዣ</h2>
+                <p>ከታች ካሉት አማራጮች መርጠው የአልጋ ቦታዎን አሁኑኑ ያስይዙ</p>
+            </div>
+            
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=600" alt="ስታንዳርድ ክፍል">
+                <div class="item-body">
+                    <h3>ስታንዳርድ መኝታ ክፍል (Standard Room)</h3>
+                    <div class="price">1,500 ETB / በሌሊት</div>
+                    <p>ለሁሉም ምቹ የሆነ፣ አስተማማኝ ዋይፋይ እና ዘመናዊ መታጠቢያ ቤት ያካተተ ንጹህ ክፍል</p>
+                    <button class="order-btn" onclick="addToCart('ስታንዳርድ መኝታ ክፍል', 1500)">ቦታ አስይዝ</button>
                 </div>
             </div>
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=200" alt="ልዩ ክትፎ">
-                <div class="menu-details">
-                    <h3>ልዩ ክትፎ</h3>
-                    <div class="price">450 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ልዩ ክትፎ', 450)">ወደ ካርት ጨምር</button>
-                </div>
-            </div>
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=200" alt="የበግ ለጋ ጥብስ">
-                <div class="menu-details">
-                    <h3>የበግ ለጋ ጥብስ</h3>
-                    <div class="price">380 ETB</div>
-                    <button class="add-btn" onclick="addToCart('የበግ ለጋ ጥብስ', 380)">ወደ ካርት ጨምር</button>
+
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=600" alt="ቪአይፒ ክፍል">
+                <div class="item-body">
+                    <h3>ቪአይፒ የቅንጦት ክፍል (VIP Luxury Suite)</h3>
+                    <div class="price">3,500 ETB / በሌሊት</div>
+                    <p>ሰፊ ሳሎን፣ አስደናቂ እይታ ያለው በረንዳ፣ ፍሪጅ እና ልዩ መስተንግዶዎችን ያካተተ መኝታ ክፍል</p>
+                    <button class="order-btn" onclick="addToCart('ቪአይፒ የቅንጦት ክፍል', 3500)">ቦታ አስይዝ</button>
                 </div>
             </div>
         </div>
 
-        <div class="section-title">መጠጦች</div>
-        <div class="menu-grid">
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1608897013039-887f21d8c804?q=80&w=200" alt="ለስላሳ መጠጦች">
-                <div class="menu-details">
-                    <h3>ለስላሳ መጠጦች</h3>
-                    <div class="price">40 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ለስላሳ መጠጦች', 40)">ወደ ካርት ጨምር</button>
+        <div id="restaurant" class="tab-content">
+            <div class="section-headline">
+                <h2>የምግቦች እና መጠጦች ዝርዝር</h2>
+                <p>የሆቴላችንን ልዩ ጣፋጭ ምግቦች መርጠው ማዘዝ ይችላሉ</p>
+            </div>
+
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=600" alt="ልዩ በየአይነቱ">
+                <div class="item-body">
+                    <h3>ልዩ በየአይነቱ</h3>
+                    <div class="price">250 ETB</div>
+                    <p>የተለያዩ የሀበሻ ባህላዊ ምግቦች በጥራት የተዘጋጁበት ልዩ ማዕድ</p>
+                    <button class="order-btn" onclick="addToCart('ልዩ በየአይነቱ', 250)">ወደ ካርት ጨምር</button>
                 </div>
             </div>
-            <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=200" alt="ሀበሻ ቢራ">
-                <div class="menu-details">
-                    <h3>ሀበሻ ቢራ</h3>
-                    <div class="price">70 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ሀበሻ ቢራ', 70)">ወደ ካርት ጨምር</button>
+
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=600" alt="ልዩ ክትፎ">
+                <div class="item-body">
+                    <h3>ልዩ ክትፎ</h3>
+                    <div class="price">450 ETB</div>
+                    <p>በቅቤና በሚጥሚጣ የተከሸነ፣ ከአይብና ከቆጮ ጋር የሚቀርብ ምርጥ የሀበሻ ክትፎ</p>
+                    <button class="order-btn" onclick="addToCart('ልዩ ክትፎ', 450)">ወደ ካርት ጨምር</button>
                 </div>
             </div>
         </div>
+
+        <div id="pool" class="tab-content">
+            <div class="section-headline">
+                <h2>የመዋኛ ገንዳ አገልግሎት</h2>
+                <p>ንጹህና ዘመናዊ መዋኛ ገንዳችንን በመጠቀም ቀንዎን ያሳምሩ</p>
+            </div>
+
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?q=80&w=600" alt="የመዋኛ ትኬት">
+                <div class="item-body">
+                    <h3>የሙሉ ቀን መዋኛ ትኬት (Full Day Pool Access)</h3>
+                    <div class="price">200 ETB</div>
+                    <p>ለሁሉም እድሜ የሚሆን ንጹህ ውሃ እና ምቹ የእረፍት ቦታ ያለው የመዋኛ ገንዳ አገልግሎት</p>
+                    <button class="order-btn" onclick="addToCart('የሙሉ ቀን መዋኛ ትኬት', 200)">ትኬትቁረጥ</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="spa" class="tab-content">
+            <div class="section-headline">
+                <h2>ማሳጅ እና ስፓ (Spa & Massage)</h2>
+                <p>በባለሙያዎች የታገዘ ዘመናዊ የማሳጅ አገልግሎት አእምሮና አካልን የሚያድስ</p>
+            </div>
+
+            <div class="item-card">
+                <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=600" alt="ስዊዲሽ ማሳጅ">
+                <div class="item-body">
+                    <h3>ሙሉ አካል ስዊዲሽ ማሳጅ (Full Body Swedish Massage)</h3>
+                    <div class="price">600 ETB / 60 ደቂቃ</div>
+                    <p>ውጥረትን የሚያስወግድ እና የደም ዝውውርን የሚያስተካክል ድንቅ ማሳጅ</p>
+                    <button class="order-btn" onclick="addToCart('ስዊዲሽ ማሳጅ', 600)">ጊዜያዝዝ</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <div class="cart-bar" id="cart-bar" style="display: none;" onclick="openCart()">
-        <span id="cart-count">የተመረጡ እቃዎች፡ 0</span>
+        <span id="cart-count">የተመረጡ አገልግሎቶች፡ 0</span>
         <span id="cart-total">ጠቅላላ፡ 0 ETB</span>
     </div>
 
@@ -356,12 +474,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="fayda-phone">የስልክ ቁጥር (ለክፍያ ማረጋገጫ የሚያገለግል)</label>
+                    <label for="fayda-phone">የስልክ ቁጥር (ለማረጋገጫ የሚያገለግል)</label>
                     <input type="tel" id="fayda-phone" placeholder="+2519..." required>
                 </div>
 
                 <div class="form-group">
-                    <label for="fayda-qr">የፋይዳ (Fayda) QR ኮድ ወይም የክፍያ ማረጋገጫ ፎቶ</label>
+                    <label for="fayda-qr">የፋይዳ (Fayda) QR ወይም የክፍያ ማረጋገጫ ስክሪንሹት</label>
                     <input type="file" id="fayda-qr" accept="image/*" required>
                 </div>
 
@@ -372,7 +490,22 @@
     </div>
 
     <script>
-        // --- Firebase Config ---
+        // --- 1. ታብ የመቀያየሪያ ሎጂክ ---
+        function switchTab(tabId) {
+            // ሁሉንም ይዘቶች ደብቅ
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // ሁሉንም ታብ በተኖች አጥፋ
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // የተመረጠውን ብቻ አሳይ
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // --- 2. የFIREBASE ኮንፊገሬሽን ---
         const firebaseConfig = {
             apiKey: "AIzaSyCm6vPlapGOIn95I3NER6t1g3FHR1xKI3g",
             authDomain: "adane-hotel.firebaseapp.com",
@@ -391,10 +524,11 @@
         const database = firebase.database();
         const storage = firebase.storage();
 
-        // --- Telegram Config ---
+        // --- 3. የቴሌግራም ቦት ኮንፊገሬሽን ---
         const TELEGRAM_BOT_TOKEN = '8946873289:AAHcg_T-YKH9inigawSa_ZqD9S3EwUunY9w'; 
         const TELEGRAM_CHAT_ID = '8946873289'; 
 
+        // --- 4. የካርት (Cart) ሲስተም ጃቫስክሪፕት ---
         let cart = [];
 
         function addToCart(name, price) {
@@ -417,7 +551,7 @@
 
             if (totalItems > 0) {
                 cartBar.style.display = 'flex';
-                cartCount.innerText = `የተመረጡ እቃዎች፦ ${totalItems}`;
+                cartCount.innerText = `የተመረጡ አገልግሎቶች፦ ${totalItems}`;
                 cartTotal.innerText = `ጠቅላላ፦ ${totalPrice} ETB`;
             } else {
                 cartBar.style.display = 'none';
@@ -453,6 +587,7 @@
             });
         }
 
+        // --- 5. ትዕዛዝ ወደ FIREBASE እና ቴሌግራም መላክ ---
         function submitOrder() {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('fayda-phone').value;
@@ -466,12 +601,7 @@
             }
 
             if (qrFileInput.files.length === 0) {
-                alert("እባክዎ የፋይዳ QR ኮድ ወይም የክፍያ ማረጋገጫ ፎቶ ያያይዙ!");
-                return;
-            }
-
-            if (cart.length === 0) {
-                alert("የመረጡት ምንም እቃ የለም!");
+                alert("እባክዎ የክፍያ ማረጋገጫ ፎቶ ያያይዙ!");
                 return;
             }
 
@@ -484,8 +614,7 @@
             const storageRef = storage.ref('fayda_qr_codes/' + orderId + '_' + file.name);
             const uploadTask = storageRef.put(file);
 
-            uploadTask.on('state_changed', 
-                null, 
+            uploadTask.on('state_changed', null, 
                 (error) => {
                     console.error(error);
                     alert("ፎቶውን መጫን አልተቻለም፣ እባክዎ በድጋሚ ይሞክሩ።");
@@ -524,21 +653,19 @@
         function sendTelegramNotification(order) {
             let itemsText = order.items.map(i => `- ${i.name} (x${i.quantity})`).join('\n');
             
-            let message = `🔔 *አዲስ ትዕዛዝ ደርሷል!*\n\n`;
+            let message = `🔔 *አዲስ የሆቴል አገልግሎት ማዘዣ ደርሷል!*\n\n`;
             message += `🆔 *ትዕዛዝ መለያ:* \`${order.orderId}\`\n`;
             message += `👤 *ደንበኛ:* ${order.customerName}\n`;
             message += `📞 *ስልክ ቁጥር:* ${order.customerPhone}\n\n`;
-            message += `🛍️ *የታዘዙ እቃዎች:*\n${itemsText}\n\n`;
+            message += `🛎️ *የተመረጡ አገልግሎቶች:*\n${itemsText}\n\n`;
             message += `💰 *ጠቅላላ ክፍያ:* ${order.totalAmount} ETB\n`;
-            message += `🖼️ *የክፍያ/QR ፎቶ ሊንክ:* [ፎቶውን እዚህ ይክፈቱ](${order.faydaQrUrl})\n`;
+            message += `🖼️ *የክፍያ ፎቶ ሊንክ:* [ፎቶውን እዚህ ይክፈቱ](${order.faydaQrUrl})\n`;
 
             const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
             
             fetch(url, {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     chat_id: TELEGRAM_CHAT_ID,
                     text: message,
@@ -554,20 +681,18 @@
                 document.getElementById('fayda-phone').value = '';
                 document.getElementById('fayda-qr').value = '';
                 
-                document.getElementById('submit-order-btn').disabled = false;
-                document.getElementById('loading').style.display = 'none';
+                submitBtn.disabled = false;
+                loadingText.style.display = 'none';
             })
             .catch(err => {
                 alert("🎉 ትዕዛዝዎ በስኬት ተመዝግቧል!");
                 cart = [];
                 updateCartBar();
                 closeCart();
-                document.getElementById('submit-order-btn').disabled = false;
-                document.getElementById('loading').style.display = 'none';
+                submitBtn.disabled = false;
+                loadingText.style.display = 'none';
             });
         }
     </script>
 </body>
 </html>
-
-                                                                        
