@@ -1,4 +1,4 @@
-                            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="am">
 <head>
     <meta charset="UTF-8">
@@ -27,98 +27,93 @@
         }
 
         body {
-            background-color: #0a0a0a;
+            background-color: var(--dark-bg);
             color: #ffffff;
-            padding-bottom: 60px;
+            font-size: 16px;
+            line-height: 1.6;
+            padding-bottom: 80px;
         }
 
-        header {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000') no-repeat center center/cover;
-            height: 250px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            border-bottom: 3px solid var(--primary-gold);
-        }
-
-        header h1 {
-            color: var(--primary-gold);
-            font-size: 24px;
-            margin-bottom: 5px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-        }
-
-        header p {
-            font-size: 14px;
-            color: #ddd;
-        }
-
+        /* የድሮው ዋና ዲዛይንና መዋቅር */
         .container {
-            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hotel-title {
+            text-align: center;
+            color: var(--primary-gold);
+            margin: 20px 0;
+            font-size: 24px;
+            font-weight: bold;
         }
 
         .section-title {
             color: var(--primary-gold);
-            margin: 20px 0 10px 0;
-            border-left: 4px solid var(--primary-gold);
-            padding-left: 10px;
-            font-size: 18px;
+            font-size: 20px;
+            margin: 25px 0 15px 0;
+            border-bottom: 1px solid var(--primary-gold);
+            padding-bottom: 5px;
         }
 
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr;
+        .menu-list {
+            display: flex;
+            flex-direction: column;
             gap: 15px;
         }
 
         .menu-item {
             background-color: var(--card-bg);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 15px;
             display: flex;
             align-items: center;
-            padding: 10px;
+            justify-content: space-between;
+            box-shadow: var(--card-shadow);
         }
 
-        .menu-item img {
-            width: 80px;
-            height: 80px;
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 10px;
             object-fit: cover;
-            border-radius: 6px;
-            margin-right: 12px;
         }
 
-        .menu-details {
-            flex-grow: 1;
-        }
-
-        .menu-details h3 {
-            font-size: 16px;
+        .item-text h3 {
+            font-size: 18px;
             color: #ffffff;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
 
-        .menu-details .price {
+        .item-text p {
             color: var(--primary-gold);
             font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 8px;
+            font-size: 16px;
         }
 
         .add-btn {
             background-color: var(--primary-gold);
             color: #000000;
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
-            font-size: 12px;
+            transition: background 0.3s;
         }
 
+        .add-btn:hover {
+            background-color: #c99f4f;
+        }
+
+        /* Floating Cart Bar */
         .cart-bar {
             position: fixed;
             bottom: 0;
@@ -126,16 +121,18 @@
             width: 100%;
             background-color: var(--primary-gold);
             color: #000000;
-            padding: 12px 20px;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
             z-index: 1000;
             box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
         }
 
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -152,10 +149,10 @@
         .modal-content {
             background-color: #1a1a1a;
             border: 1px solid var(--primary-gold);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 20px;
             max-width: 500px;
-            margin: 30px auto;
+            margin: 40px auto;
         }
 
         .modal-header {
@@ -169,34 +166,34 @@
 
         .modal-header h2 {
             color: var(--primary-gold);
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .close-btn {
             color: #ffffff;
-            font-size: 24px;
+            font-size: 28px;
             cursor: pointer;
         }
 
         .cart-item-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
             border-bottom: 1px solid #2a2a2a;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .billing-form {
-            margin-top: 20px;
+            margin-top: 25px;
             border-top: 2px dashed #333;
-            padding-top: 15px;
+            padding-top: 20px;
         }
 
         .billing-form h3 {
             color: var(--primary-gold);
-            font-size: 16px;
-            margin-bottom: 12px;
+            font-size: 18px;
+            margin-bottom: 15px;
         }
 
         .form-group {
@@ -205,23 +202,23 @@
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 14px;
             color: #ccc;
         }
 
         .form-group input {
             width: 100%;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 12px;
+            border-radius: 6px;
             border: 1px solid #444;
             background-color: #222;
             color: white;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .form-group input[type="file"] {
-            padding: 5px;
+            padding: 8px;
             background-color: #111;
             border: 1px dashed var(--primary-gold);
         }
@@ -231,12 +228,12 @@
             background-color: var(--primary-gold);
             color: black;
             border: none;
-            padding: 12px;
-            border-radius: 5px;
+            padding: 14px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .submit-btn:disabled {
@@ -249,65 +246,75 @@
             display: none;
             color: var(--primary-gold);
             text-align: center;
-            margin-top: 10px;
+            margin-top: 12px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 15px;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>አዳነ ኢንተርናሽናል ሆቴል</h1>
-        <p>የምርጥ ምግቦች እና መጠጦች ማዘዣ ገጽ</p>
-    </header>
-
     <div class="container">
+        <div class="hotel-title">አዳነ ኢንተርናሽናል ሆቴል</div>
+
         <div class="section-title">የተመረጡ ምግቦች</div>
-        <div class="menu-grid">
+        <div class="menu-list">
             <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200" alt="ልዩ በየአይነቱ">
-                <div class="menu-details">
-                    <h3>ልዩ በየአይነቱ</h3>
-                    <div class="price">250 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ልዩ በየአይነቱ', 250)">ወደ ካርት ጨምር</button>
+                <div class="item-info">
+                    <img class="item-img" src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=200" alt="ልዩ በየአይነቱ">
+                    <div class="item-text">
+                        <h3>ልዩ በየአይነቱ</h3>
+                        <p>250 ETB</p>
+                    </div>
                 </div>
+                <button class="add-btn" onclick="addToCart('ልዩ በየአይነቱ', 250)">ወደ ካርት ጨምር</button>
             </div>
+
             <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=200" alt="ክትፎ">
-                <div class="menu-details">
-                    <h3>ልዩ ክትፎ</h3>
-                    <div class="price">450 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ልዩ ክትፎ', 450)">ወደ ካርት ጨምር</button>
+                <div class="item-info">
+                    <img class="item-img" src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?q=80&w=200" alt="ልዩ ክትፎ">
+                    <div class="item-text">
+                        <h3>ልዩ ክትፎ</h3>
+                        <p>450 ETB</p>
+                    </div>
                 </div>
+                <button class="add-btn" onclick="addToCart('ልዩ ክትፎ', 450)">ወደ ካርት ጨምር</button>
             </div>
+
             <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=200" alt="የበግ ጥብስ">
-                <div class="menu-details">
-                    <h3>የበግ ለጋ ጥብስ</h3>
-                    <div class="price">380 ETB</div>
-                    <button class="add-btn" onclick="addToCart('የበግ ለጋ ጥብስ', 380)">ወደ ካርት ጨምር</button>
+                <div class="item-info">
+                    <img class="item-img" src="https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=200" alt="የበግ ለጋ ጥብስ">
+                    <div class="item-text">
+                        <h3>የበግ ለጋ ጥብስ</h3>
+                        <p>380 ETB</p>
+                    </div>
                 </div>
+                <button class="add-btn" onclick="addToCart('የበግ ለጋ ጥብስ', 380)">ወደ ካርት ጨምር</button>
             </div>
         </div>
 
         <div class="section-title">መጠጦች</div>
-        <div class="menu-grid">
+        <div class="menu-list">
             <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1608897013039-887f21d8c804?q=80&w=200" alt="ለስላሳ">
-                <div class="menu-details">
-                    <h3>ለስላሳ መጠጦች</h3>
-                    <div class="price">40 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ለስላሳ መጠጦች', 40)">ወደ ካርት ጨምር</button>
+                <div class="item-info">
+                    <img class="item-img" src="https://images.unsplash.com/photo-1608897013039-887f21d8c804?q=80&w=200" alt="ለስላሳ መጠጦች">
+                    <div class="item-text">
+                        <h3>ለስላሳ መጠጦች</h3>
+                        <p>40 ETB</p>
+                    </div>
                 </div>
+                <button class="add-btn" onclick="addToCart('ለስላሳ መጠጦች', 40)">ወደ ካርት ጨምር</button>
             </div>
+
             <div class="menu-item">
-                <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=200" alt="ሀበሻ ቢራ">
-                <div class="menu-details">
-                    <h3>ሀበሻ ቢራ</h3>
-                    <div class="price">70 ETB</div>
-                    <button class="add-btn" onclick="addToCart('ሀበሻ ቢራ', 70)">ወደ ካርት ጨምር</button>
+                <div class="item-info">
+                    <img class="item-img" src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?q=80&w=200" alt="ሀበሻ ቢራ">
+                    <div class="item-text">
+                        <h3>ሀበሻ ቢራ</h3>
+                        <p>70 ETB</p>
+                    </div>
                 </div>
+                <button class="add-btn" onclick="addToCart('ሀበሻ ቢራ', 70)">ወደ ካርት ጨምር</button>
             </div>
         </div>
     </div>
@@ -370,9 +377,9 @@
         const database = firebase.database();
         const storage = firebase.storage();
 
-        // --- 2. የቴሌግራም ቦት መረጃ (በአማኑኤል ቦት ቶከን የተተካ) ---
+        // --- 2. የቴሌግራም ቦት መረጃ ---
         const TELEGRAM_BOT_TOKEN = '8946873289:AAHcg_T-YKH9inigawSa_ZqD9S3EwUunY9w'; 
-        const TELEGRAM_CHAT_ID = '8946873289'; // አስተውል፡ ይህ የቦቱ መለያ ነው፣ የአንተን የግል Chat ID ለማግኘት ከታች ያለውን መመሪያ አንብብ
+        const TELEGRAM_CHAT_ID = '8946873289'; 
 
         // --- 3. የካርት (Cart) ሲስተም ጃቫስክሪፕት ---
         let cart = [];
@@ -551,4 +558,3 @@
     </script>
 </body>
 </html>
-                                        
