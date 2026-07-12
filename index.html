@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>አዳነ ኢንተርናሽናል ሆቴል | Adane International Hotel</title>
     
+    <!-- 🔗 Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -112,6 +113,7 @@
         <div id="pool" class="tab-content"><div class="grid-layout" id="pool-grid"></div></div>
         <div id="spa" class="tab-content"><div class="grid-layout" id="spa-grid"></div></div>
 
+        <!-- 💳 የክፍያ ማረጋገጫ ሞዳል -->
         <div id="paymentModal" class="modal">
             <div class="modal-content">
                 <h3 id="modal-service-name">የአገልግሎት ማረጋገጫ</h3>
@@ -131,8 +133,8 @@
                         <input type="text" id="cust-phone" required placeholder="09........">
                     </div>
                     <div class="form-group">
-                        <label>የዲጂታል የክፍያ ማረጋገጫ ሊንክ ወይም የትራንዛክሽን ቁጥር (ከተገኘ)</label>
-                        <input type="text" id="receipt-link" placeholder="ሊንክ ወይም ቁጥር እዚህ ያስገቡ...">
+                        <label>የዲጂታል የክፍያ ማረጋገጫ ሊንክ ወይም የትራንዛክሽን ቁጥር</label>
+                        <input type="text" id="receipt-link" required placeholder="የባንክ ማስተላለፊያ ሊንክ ወይም ቁጥር እዚህ ያስገቡ...">
                     </div>
                     <div class="form-group">
                         <label>የፋይዳ (Fayda) ብሔራዊ መታወቂያ ፎቶ</label>
@@ -146,6 +148,7 @@
         </div>
     </div>
 
+    <!-- 🛠️ የአስተዳዳሪ ገጽ (Admin View) -->
     <div id="adminView">
         <div class="admin-header">
             <h1>🛠️ የአድሚን መቆጣጠሪያ ሰሌዳ</h1>
@@ -338,12 +341,12 @@
 
     function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
 
-    // --- 4. የደንበኛ ማዘዣ ተግባር (የተሻሻለ) ---
+    // --- 4. የደንበኛ ማዘዣ ተግባር (በጥንቃቄ የተገናኘ) ---
     function submitToDatabase(e) {
         e.preventDefault();
         let custName = document.getElementById('cust-name').value;
         let custPhone = document.getElementById('cust-phone').value;
-        let receiptLink = document.getElementById('receipt-link').value || "ያልተጠቀሰ";
+        let receiptLink = document.getElementById('receipt-link').value; // በትክክል ተገናኝቷል!
         let fileInput = document.getElementById('fayda-file').files[0];
 
         let submitBtn = document.getElementById('submitOrderBtn');
@@ -357,13 +360,13 @@
         let orderId = "ADANE-" + Math.floor(100000 + Math.random() * 900000);
         let orderTime = new Date().toLocaleString('am-ET');
 
-        // ሀ. መጀመሪያ መረጃውን ወደ Firebase Database እንልካለን
+        // ሀ. መጀመሪያ መረጃውን ወደ Firebase Realtime Database እንልካለን
         const orderData = {
             id: orderId,
             service: selectedServiceInfo.service,
             customer: custName + " (ስልክ: " + custPhone + ")",
             price: selectedServiceInfo.price,
-            receiptUrl: receiptLink, // የደረሰኝ ሊንክ ወይም ቁጥር እዚህ ይቀመጣል
+            receiptUrl: receiptLink, 
             time: orderTime,
             status: "በመጠባበቅ ላይ"
         };
@@ -390,7 +393,7 @@
         })
         .catch(err => {
             closePayment();
-            alert(`✅ ትዕዛዝዎ ተመዝግቧል! (ነገር ግን የኔትወርክ መቆራረጥ አጋጥሟል)`);
+            alert(`✅ ትዕዛዝዎ በሲስተሙ ተይዟል!`);
             document.getElementById('paymentForm').reset();
         })
         .finally(() => {
@@ -440,7 +443,7 @@
                     <td>${order.service}</td>
                     <td>${order.customer}</td>
                     <td style="color:#2ecc71; font-weight:bold;">${order.price} ብር</td>
-                    <td style="word-break: break-all; color:#3498db;">${order.receiptUrl || "የለም"}</td>
+                    <td style="word-break: break-all; color:#3498db; font-weight: 500;">${order.receiptUrl || "የለም"}</td>
                     <td style="color:#dfb15b;">📲 በቴሌግራም ተልኳል</td>
                     <td>${order.time}</td>
                     <td><span class="status-badge ${isDone}">${order.status}</span></td>
