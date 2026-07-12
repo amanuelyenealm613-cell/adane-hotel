@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>አዳነ ኢንተርናሽናል ሆቴል | Adane International Hotel</title>
     
-    <!-- 🔗 Firebase SDKs (Realtime Database ብቻ ነው የምንጠቀመው) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -113,7 +112,6 @@
         <div id="pool" class="tab-content"><div class="grid-layout" id="pool-grid"></div></div>
         <div id="spa" class="tab-content"><div class="grid-layout" id="spa-grid"></div></div>
 
-        <!-- 💳 የክፍያ ማረጋገጫ ሞዳል -->
         <div id="paymentModal" class="modal">
             <div class="modal-content">
                 <h3 id="modal-service-name">የአገልግሎት ማረጋገጫ</h3>
@@ -133,18 +131,21 @@
                         <input type="text" id="cust-phone" required placeholder="09........">
                     </div>
                     <div class="form-group">
-                        <label>የፋይዳ (Fayda) QR ወይም የክፍያ ማረጋገጫ ስክሪንሾት/ፎቶ</label>
-                        <input type="file" id="receipt-file" accept="image/*" required>
+                        <label>የዲጂታል የክፍያ ማረጋገጫ ሊንክ ወይም የትራንዛክሽን ቁጥር (ከተገኘ)</label>
+                        <input type="text" id="receipt-link" placeholder="ሊንክ ወይም ቁጥር እዚህ ያስገቡ...">
+                    </div>
+                    <div class="form-group">
+                        <label>የፋይዳ (Fayda) ብሔራዊ መታወቂያ ፎቶ</label>
+                        <input type="file" id="fayda-file" accept="image/*" required>
                     </div>
                     <button type="submit" class="action-btn" id="submitOrderBtn">ትዕዛዝህን በቋሚነት ላክ</button>
-                    <div id="loadingText">እባክዎ ይጠብቁ... መረጃው ለሆቴሉ እና ለቴሌግራም እየተላከ ነው...</div>
+                    <div id="loadingText">እባክዎ ይጠብቁ... መረጃው እየተላከ ነው...</div>
                 </form>
                 <button class="close-modal" onclick="closePayment()">ይዝጉ</button>
             </div>
         </div>
     </div>
 
-    <!-- 🛠️ የአስተዳዳሪ ገጽ (Admin View) -->
     <div id="adminView">
         <div class="admin-header">
             <h1>🛠️ የአድሚን መቆጣጠሪያ ሰሌዳ</h1>
@@ -200,7 +201,8 @@
                         <th>የተመረጠ አገልግሎት</th>
                         <th>የደንበኛ መረጃ</th>
                         <th>ዋጋ</th>
-                        <th>ደረሰኝ ፎቶ</th>
+                        <th>የደረሰኝ ሊንክ/ቁጥር</th>
+                        <th>የፋይዳ ፎቶ ሁኔታ</th>
                         <th>ሰዓት</th>
                         <th>ሁኔታ</th>
                         <th>ማስተካከያ</th>
@@ -212,7 +214,7 @@
     </div>
 
 <script>
-    // --- 1. FIREBASE ኮንፊገሬሽን (Realtime Database ብቻ) ---
+    // --- 1. FIREBASE ኮንፊገሬሽን ---
     const firebaseConfig = {
         apiKey: "AIzaSyCm6vPlapGOIn95I3NER6t1g3FHR1xKI3g",
         authDomain: "adane-hotel.firebaseapp.com",
@@ -278,7 +280,6 @@
         });
     }
 
-    // --- 3. አድሚኑ አዲስ አገልግሎት ሲጨምር (ቀጥታ ወደ ቴሌግራም ይልካል) ---
     function addNewService(e) {
         e.preventDefault();
         let category = document.getElementById('item-category').value;
@@ -309,7 +310,7 @@
             return database.ref('services').push(newItem);
         })
         .then(() => {
-            alert("✅ አገልግሎቱ በተሳካ ሁኔታ ተመዝግቧል! ፎቶው ወደ ቴሌግራም ተልኳል።");
+            alert("✅ አገልግሎቱ በተሳካ ሁኔታ ተመዝግቧል!");
             document.getElementById('newItemForm').reset();
         })
         .catch(err => {
@@ -337,17 +338,18 @@
 
     function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
 
-    // --- 4. ደንበኛው ትዕዛዝ ሲልክ (ያለ ምንም መቆሚያ የተሰራ ማስተካከያ) ---
+    // --- 4. የደንበኛ ማዘዣ ተግባር (የተሻሻለ) ---
     function submitToDatabase(e) {
         e.preventDefault();
         let custName = document.getElementById('cust-name').value;
         let custPhone = document.getElementById('cust-phone').value;
-        let fileInput = document.getElementById('receipt-file').files[0];
+        let receiptLink = document.getElementById('receipt-link').value || "ያልተጠቀሰ";
+        let fileInput = document.getElementById('fayda-file').files[0];
 
         let submitBtn = document.getElementById('submitOrderBtn');
         let loadingText = document.getElementById('loadingText');
 
-        if (!fileInput) { alert("እባክዎ ፎቶ ያያይዙ!"); return; }
+        if (!fileInput) { alert("እባክዎ የፋይዳ መታወቂያ ፎቶ ያያይዙ!"); return; }
 
         submitBtn.disabled = true;
         loadingText.style.display = 'block';
@@ -355,23 +357,21 @@
         let orderId = "ADANE-" + Math.floor(100000 + Math.random() * 900000);
         let orderTime = new Date().toLocaleString('am-ET');
 
-        // ሀ. መጀመሪያ የጽሑፍ መረጃውን ወደ ሪልታይም ዳታቤዝ እንልካለን (ይህ በፍፁም አይቆምም)
+        // ሀ. መጀመሪያ መረጃውን ወደ Firebase Database እንልካለን
         const orderData = {
             id: orderId,
             service: selectedServiceInfo.service,
             customer: custName + " (ስልክ: " + custPhone + ")",
             price: selectedServiceInfo.price,
-            receiptUrl: "ፎቶው ወደ ቴሌግራም ተልኳል", 
+            receiptUrl: receiptLink, // የደረሰኝ ሊንክ ወይም ቁጥር እዚህ ይቀመጣል
             time: orderTime,
             status: "በመጠባበቅ ላይ"
         };
 
         database.ref('orders/' + orderId).set(orderData)
         .then(() => {
-            console.log("Firebase Realtime Database updated.");
-            
-            // ለ. ቀጥሎ ፎቶውን እና ሙሉ መረጃውን ወደ ቴሌግራም እንልካለን
-            let messageText = `🔔 **አዲስ የሆቴል ትዕዛዝ ገብቷል!**\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n📅 ሰዓት: ${orderTime}`;
+            // ለ. በመቀጠል የፋይዳ ፎቶውን እና ሙሉ መረጃውን ወደ ቴሌግራም እንልካለን
+            let messageText = `🔔 **አዲስ የሆቴል ትዕዛዝ (በፋይዳ የተረጋገጠ)**\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n🔗 የደረሰኝ ሊንክ/ቁጥር: ${receiptLink}\n📅 ሰዓት: ${orderTime}`;
             
             let telegramFormData = new FormData();
             telegramFormData.append("chat_id", hotelChatId);
@@ -384,16 +384,13 @@
             });
         })
         .then(res => {
-            // ቴሌግራም ቢሳካም ባይሳካም እዚህ ይደርሳል
             closePayment();
-            alert(`✅ ትዕዛዝዎ በተሳካ ሁኔታ ተመዝግቧል!\nየአድሚን ሰሌዳውን ወይም ቴሌግራምዎን ያረጋግጡ።\nየትዕዛዝ መለያ ቁጥር፦ ${orderId}`);
+            alert(`✅ ትዕዛዝዎ በተሳካ ሁኔታ ተመዝግቧል!\nየትዕዛዝ መለያ ቁጥር፦ ${orderId}`);
             document.getElementById('paymentForm').reset();
         })
         .catch(err => {
-            // ኢንተርኔት ወይም የቦት ስህተት ቢኖር እንኳ ፎርሙ ተዘግቶ ይጨርሳል
-            console.error("Error context:", err);
             closePayment();
-            alert(`✅ ትዕዛዝዎ በሲስተሙ ተይዟል!\n(የቴሌግራም መልእክት መላክ ላይ ችግር ቢኖርም በአድሚን ሰሌዳው ላይ መረጃው ይደርሳል)`);
+            alert(`✅ ትዕዛዝዎ ተመዝግቧል! (ነገር ግን የኔትወርክ መቆራረጥ አጋጥሟል)`);
             document.getElementById('paymentForm').reset();
         })
         .finally(() => {
@@ -402,7 +399,6 @@
         });
     }
 
-    // --- 5. የአድሚን ፓስወርድ ማረጋገጫ ---
     function checkAdminPassword() {
         let enterPop = prompt("🔐 የአስተዳዳሪውን ይለፍ ቃል ያስገቡ፦");
         if (enterPop === adminPassword) {
@@ -431,7 +427,7 @@
         let totalRevenue = 0;
 
         if (ordersList.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:#888;">ምንም አይነት የክፍያ ታሪክ የለም።</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#888;">ምንም አይነት የክፍያ ታሪክ የለም።</td></tr>`;
             return;
         }
 
@@ -444,6 +440,7 @@
                     <td>${order.service}</td>
                     <td>${order.customer}</td>
                     <td style="color:#2ecc71; font-weight:bold;">${order.price} ብር</td>
+                    <td style="word-break: break-all; color:#3498db;">${order.receiptUrl || "የለም"}</td>
                     <td style="color:#dfb15b;">📲 በቴሌግራም ተልኳል</td>
                     <td>${order.time}</td>
                     <td><span class="status-badge ${isDone}">${order.status}</span></td>
