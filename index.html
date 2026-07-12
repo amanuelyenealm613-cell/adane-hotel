@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>አዳነ ኢንተርናሽናል ሆቴል | Adane International Hotel</title>
     
+    <!-- 🔗 Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -40,7 +41,7 @@
             height: 35vh; display: flex; justify-content: center; align-items: center; text-align: center; color: white; padding: 0 20px;
         }
 
-        .tab-navigation { display: flex; justify-content: center; background-color: #1a1a1a; position: sticky; top: 60px; z-index: 99; }
+        .tab-navigation { display: flex; justify-content: center; background-color: #1a1a1a; position: sticky; top: 60px; z-index: 99; flex-wrap: wrap; }
         .tab-btn { background: none; border: none; color: #bbb; padding: 16px 24px; font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 4px solid transparent; }
         .tab-btn.active { color: var(--primary-gold); border-bottom: 4px solid var(--primary-gold); background-color: #222; }
 
@@ -116,13 +117,16 @@
             <button class="tab-btn" onclick="openTab('restaurant')">🍔 ሬስቶራንት & ሜኑ</button>
             <button class="tab-btn" onclick="openTab('pool')">🏊 የመዋኛ ገንዳ</button>
             <button class="tab-btn" onclick="openTab('spa')">💆 ማሳጅ & ስፓ</button>
+            <button class="tab-btn" onclick="openTab('club')">💃  nightclub / ጭፈራ ቤት</button>
         </div>
 
         <div id="rooms" class="tab-content active"><div class="grid-layout" id="rooms-grid"></div></div>
         <div id="restaurant" class="tab-content"><div class="grid-layout" id="restaurant-grid"></div></div>
         <div id="pool" class="tab-content"><div id="pool-status-wrapper"></div><div class="grid-layout" id="pool-grid"></div></div>
         <div id="spa" class="tab-content"><div class="grid-layout" id="spa-grid"></div></div>
+        <div id="club" class="tab-content"><div class="grid-layout" id="club-grid"></div></div>
 
+        <!-- 💳 የክፍያ ማረጋገጫ ሞዳል -->
         <div id="paymentModal" class="modal">
             <div class="modal-content">
                 <h3 id="modal-service-name">የአገልግሎት ማረጋገጫ</h3>
@@ -157,12 +161,14 @@
         </div>
     </div>
 
+    <!-- 🛠️ የአስተዳዳሪ ገጽ (Admin View) -->
     <div id="adminView">
         <div class="admin-header">
             <h1>🛠️ የአድሚን መቆጣጠሪያ ሰሌዳ</h1>
             <button style="padding:10px 20px; background:var(--primary-gold); border:none; font-weight:bold; cursor:pointer; border-radius:6px; color:black;" onclick="showUserView()">⬅️ ወደ ደንበኛ ገጽ ተመለስ</button>
         </div>
 
+        <!-- 🏊 የመዋኛ ገንዳ ሁኔታ መቆጣጠሪያ -->
         <div class="pool-toggle-box">
             <h3 style="color: var(--primary-gold);">🏊 የመዋኛ ገንዳ የአሁኑ ሁኔታ (Pool Status)</h3>
             <div>
@@ -174,7 +180,7 @@
         </div>
 
         <div class="admin-form-container">
-            <h2>➕ አዲስ አገልግሎት / የምግብ / የአልጋ አይነት መመዝገቢያ</h2>
+            <h2>➕ አዲስ አገልግሎት / የምግብ / የአልጋ / የጭፈራ ጠረጴዛ መመዝገቢያ</h2>
             <form id="newItemForm" onsubmit="addNewService(event)">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px;">
                     <div class="form-group">
@@ -184,10 +190,11 @@
                             <option value="restaurant">🍔 ሬስቶራንት & ሜኑ</option>
                             <option value="pool">🏊 የመዋኛ ገንዳ</option>
                             <option value="spa">💆 ማሳጅ & ስፓ</option>
+                            <option value="club">💃 nightclub / ጭፈራ ቤት</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>የአገልግሎቱ/የአልጋው ስም</label>
+                        <label>የአገልግሎቱ/የዕቃው ስም</label>
                         <input type="text" id="item-title" required placeholder="የአገልግሎቱ ስም">
                     </div>
                     <div class="form-group">
@@ -195,7 +202,7 @@
                         <input type="number" id="item-price" required placeholder="ዋጋ">
                     </div>
                     <div class="form-group">
-                        <label>የክፍሎች/የዕቃዎች ብዛት</label>
+                        <label>የክፍሎች/የዕቃዎች/የጠረጴዛዎች ብዛት</label>
                         <input type="number" id="item-quantity" required value="10" min="0" placeholder="ብዛት">
                     </div>
                 </div>
@@ -212,6 +219,7 @@
             </form>
         </div>
 
+        <!-- 📋 የተመዘገቡ አገልግሎቶች ማስተዳደሪያ ሰሌዳ -->
         <div class="table-container">
             <h3 style="margin-bottom: 15px; color: var(--primary-gold);">📋 የተመዘገቡ አገልግሎቶች / አልጋዎች ዝርዝር (ለመጨመር/ለመቀነስ)</h3>
             <table>
@@ -287,7 +295,6 @@
             let controlDropdown = document.getElementById('pool-status-control');
             if(controlDropdown) controlDropdown.value = status;
             
-            // የዋና ገንዳ ፔጅ ላይ መልዕክት ለማሳየት
             let poolWrapper = document.getElementById('pool-status-wrapper');
             let poolGrid = document.getElementById('pool-grid');
             if(poolWrapper && poolGrid) {
@@ -316,7 +323,7 @@
     }
 
     function renderUserServices(servicesList) {
-        const grids = { rooms: 'rooms-grid', restaurant: 'restaurant-grid', pool: 'pool-grid', spa: 'spa-grid' };
+        const grids = { rooms: 'rooms-grid', restaurant: 'restaurant-grid', pool: 'pool-grid', spa: 'spa-grid', club: 'club-grid' };
         Object.values(grids).forEach(id => { 
             let el = document.getElementById(id);
             if(el) el.innerHTML = ''; 
@@ -348,7 +355,6 @@
         });
     }
 
-    // 📋 በአድሚን ገጽ ላይ ያሉ አገልግሎቶችን መጨመሪያ/መቀነሻ ቴብል ማሳያ
     function renderAdminServicesTable(servicesList) {
         let tbody = document.getElementById('services-manage-table');
         if(!tbody) return;
@@ -388,6 +394,7 @@
         }
     }
 
+    // 🖼️ ፎቶውን በነጻ ወደ ዌብሳይት ሊንክ መቀየሪያ (ImgBB API) የተዋሃደበት አዲስ አገልግሎት መመዝገቢያ
     function addNewService(e) {
         e.preventDefault();
         let category = document.getElementById('item-category').value;
@@ -405,10 +412,29 @@
         addBtn.disabled = true;
         formLoading.style.display = 'inline';
 
-        let defaultImg = "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400";
-        let newItem = { category, title, price: Number(price), quantity: Number(qty), desc, img: defaultImg };
+        let imgFormData = new FormData();
+        imgFormData.append("image", fileInput);
 
-        database.ref('services').push(newItem)
+        // መጀመሪያ ፎቶውን ወደ ሊንክ እንቀይረዋለን
+        fetch("https://api.imgbb.com/1/upload?key=6d207e02198a847aa98d41a53013ef35", {
+            method: "POST",
+            body: imgFormData
+        })
+        .then(response => response.json())
+        .then(imgRes => {
+            let uploadedImgUrl = imgRes.data.url;
+
+            let newItem = { 
+                category, 
+                title, 
+                price: Number(price), 
+                quantity: Number(qty), 
+                desc, 
+                img: uploadedImgUrl 
+            };
+
+            return database.ref('services').push(newItem);
+        })
         .then(() => {
             let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n🔢 መነሻ ብዛት: ${qty}\n📝 መግለጫ: ${desc}`;
             let tgData = new FormData();
@@ -419,7 +445,7 @@
             return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData });
         })
         .then(res => {
-            alert("✅ አገልግሎቱ እና ብዛቱ በዋናው ገጽ ላይ ወዲያውኑ ታይቷል!");
+            alert("✅ አገልግሎቱ ከራሱ ፎቶ ጋር በዋናው ገጽ ላይ ወዲያውኑ ታይቷል!");
             document.getElementById('newItemForm').reset();
         })
         .catch(err => {
@@ -477,7 +503,6 @@
 
         database.ref('orders/' + orderId).set(orderData)
         .then(() => {
-            // ደንበኛው ሲያዝዝ ካለው ብዛት ላይ 1 ቁጥር ይቀንሳል
             if(selectedServiceInfo.itemId && selectedServiceInfo.currentQty > 0) {
                 updateServiceQty(selectedServiceInfo.itemId, selectedServiceInfo.currentQty - 1);
             }
@@ -554,7 +579,7 @@
                     <td><span class="status-badge ${isDone}">${order.status}</span></td>
                     <td>
                         <select onchange="database.ref('orders/${order.key}').update({status: this.value})" style="background:#222; color:white; border:1px solid #444; padding:3px;">
-                            <option value="በመጠባበቅ ላይ" ${order.status === 'በመጠባበቅ ላይ' ? 'selected' : ''}>በመጠባበቅ ላይ</option>
+                            <option value="በመጠባበቅ ላይ" ${order.status === 'በመጠባбеቅ ላይ' ? 'selected' : ''}>በመጠባበቅ ላይ</option>
                             <option value="ተረጋግጧል" ${order.status === 'ተረጋግጧል' ? 'selected' : ''}>አረጋግጥ</option>
                         </select>
                     </td>
