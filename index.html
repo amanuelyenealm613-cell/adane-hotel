@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>አዳነ ኢንተርናሽናል ሆቴል | Adane International Hotel</title>
     
-    <!-- 🔗 Firebase SDKs -->
+    <!-- 🔗 Firebase SDKs (Realtime Database ብቻ ነው የምንጠቀመው) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <style>
         :root {
@@ -20,147 +19,49 @@
             --card-bg: #1e1e1e;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
+        body { background-color: var(--light-bg); color: var(--text-dark); }
 
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 18px 8%;
-            background-color: var(--dark-bg);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 18px 8%;
+            background-color: var(--dark-bg); color: white; position: sticky; top: 0; z-index: 100;
             border-bottom: 2px solid var(--primary-gold);
         }
 
-        header .logo {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary-gold);
-            letter-spacing: 1.5px;
-        }
+        header .logo { font-size: 20px; font-weight: 800; color: var(--primary-gold); letter-spacing: 1px; }
 
         .admin-nav-btn {
-            background: none;
-            border: 1px solid var(--primary-gold);
-            color: var(--primary-gold);
-            padding: 6px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
+            background: none; border: 1px solid var(--primary-gold); color: var(--primary-gold);
+            padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s;
         }
-        .admin-nav-btn:hover {
-            background: var(--primary-gold);
-            color: black;
-        }
+        .admin-nav-btn:hover { background: var(--primary-gold); color: black; }
 
         .hero {
             background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.75)), url('https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=1200&auto=format&fit=crop') no-repeat center center/cover;
-            height: 40vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            padding: 0 20px;
+            height: 35vh; display: flex; justify-content: center; align-items: center; text-align: center; color: white; padding: 0 20px;
         }
 
-        .hero-content h1 { 
-            font-size: 36px; 
-            margin-bottom: 15px; 
-            color: var(--primary-gold);
-        }
+        .tab-navigation { display: flex; justify-content: center; background-color: #1a1a1a; position: sticky; top: 60px; z-index: 99; }
+        .tab-btn { background: none; border: none; color: #bbb; padding: 16px 24px; font-size: 15px; font-weight: bold; cursor: pointer; border-bottom: 4px solid transparent; }
+        .tab-btn.active { color: var(--primary-gold); border-bottom: 4px solid var(--primary-gold); background-color: #222; }
 
-        .tab-navigation {
-            display: flex;
-            justify-content: center;
-            background-color: #1a1a1a;
-            position: sticky;
-            top: 62px;
-            z-index: 99;
-        }
-
-        .tab-btn {
-            background: none;
-            border: none;
-            color: #bbb;
-            padding: 16px 24px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 4px solid transparent;
-        }
-
-        .tab-btn.active {
-            color: var(--primary-gold);
-            border-bottom: 4px solid var(--primary-gold);
-            background-color: #222;
-        }
-
-        .tab-content {
-            display: none;
-            padding: 40px 8%;
-            max-width: 1300px;
-            margin: 0 auto;
-        }
-
+        .tab-content { display: none; padding: 40px 8%; max-width: 1300px; margin: 0 auto; }
         .tab-content.active { display: block; }
-        .section-title { text-align: center; font-size: 28px; margin-bottom: 30px; color: #111; }
 
-        .grid-layout {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .custom-card {
-            background-color: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            border: 1px solid #e2ded5;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card-image { height: 200px; background-size: cover; background-position: center; }
+        .grid-layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .custom-card { background-color: white; border-radius: 12px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid #e2ded5; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-image { height: 200px; background-size: cover; background-position: center; background-color: #eee; }
         .card-info { padding: 20px; flex-grow: 1; }
         .card-price { font-size: 18px; font-weight: bold; color: #b8860b; margin-bottom: 15px; background: #fff8eb; display: inline-block; padding: 4px 12px; border-radius: 6px; }
 
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: bold; color: #444; }
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px;
-        }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
 
-        .action-btn {
-            width: 100%; padding: 14px; background-color: var(--primary-gold); border: none;
-            color: black; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 8px;
-        }
+        .action-btn { width: 100%; padding: 14px; background-color: var(--primary-gold); border: none; color: black; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 8px; }
         .action-btn:disabled { background-color: #ccc; color: #666; cursor: not-allowed; }
 
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.75); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px);
-        }
-
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(4px); }
         .modal-content { background-color: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 480px; text-align: center; }
         .bank-details { background: #fefaf2; padding: 15px; border-radius: 10px; text-align: left; margin-bottom: 15px; font-size: 14px; border: 1px dashed var(--primary-gold); }
         .close-modal { background: #eee; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 10px; cursor: pointer; width: 100%; font-weight: bold; }
@@ -188,7 +89,6 @@
 </head>
 <body>
 
-    <!-- 🌐 የተጠቃሚዎች ገጽ (User View) -->
     <div id="userView">
         <header>
             <div class="logo">ADANE INTERNATIONAL HOTEL</div>
@@ -197,7 +97,7 @@
 
         <section class="hero">
             <div class="hero-content">
-                <h1>የአገልግሎት መግዣና ማስያዣ ሲስተም</h1>
+                <h1 style="color: var(--primary-gold);">የአገልግሎት መግዣና ማስያዣ ሲስተም</h1>
             </div>
         </section>
 
@@ -213,7 +113,7 @@
         <div id="pool" class="tab-content"><div class="grid-layout" id="pool-grid"></div></div>
         <div id="spa" class="tab-content"><div class="grid-layout" id="spa-grid"></div></div>
 
-        <!-- 💳 የክፍያ ማረጋገጫ ሞዳል (የተስተካከሉ የፎርም መለያዎች) -->
+        <!-- 💳 የክፍያ ማረጋገጫ ሞዳል -->
         <div id="paymentModal" class="modal">
             <div class="modal-content">
                 <h3 id="modal-service-name">የአገልግሎት ማረጋገጫ</h3>
@@ -229,15 +129,15 @@
                         <input type="text" id="cust-name" required placeholder="ለምሳሌ: Amanuel Yenealm">
                     </div>
                     <div class="form-group">
-                        <label>የስልክ ቁጥር (ለማረጋገጫ የሚጠቅም)</label>
+                        <label>የስልክ ቁጥር</label>
                         <input type="text" id="cust-phone" required placeholder="09........">
                     </div>
                     <div class="form-group">
-                        <label>የፋይዳ (Fayda) QR ወይም የክፍያ ማረጋገጫ ስክሪንሾት/ፎቶ</label>
+                        <label>የክፍያ ማረጋገጫ ስክሪንሾት/ፎቶ</label>
                         <input type="file" id="receipt-file" accept="image/*" required>
                     </div>
                     <button type="submit" class="action-btn" id="submitOrderBtn">ትዕዛዝህን በቋሚነት ላክ</button>
-                    <div id="loadingText">እባክዎ ይጠብቁ... መረጃው ለሆቴሉ እና ለቴሌግራም እየተላከ ነው...</div>
+                    <div id="loadingText">እባክዎ ይጠብቁ... መረጃው እየተላከ ነው...</div>
                 </form>
                 <button class="close-modal" onclick="closePayment()">ይዝጉ</button>
             </div>
@@ -251,9 +151,9 @@
             <button style="padding:10px 20px; background:var(--primary-gold); border:none; font-weight:bold; cursor:pointer; border-radius:6px; color:black;" onclick="showUserView()">⬅️ ወደ ደንበኛ ገጽ ተመለስ</button>
         </div>
 
-        <!-- ➕ አዲስ አገልግሎት መመዝገቢያ ፎርም -->
         <div class="admin-form-container">
-            <h2>➕ አዲስ አገልግሎት / የምግብ አይነት መመዝገቢያ</h2>
+            <h2>➕ አዲስ አገልግሎት መመዝገቢያ (ያለ Storage ቀጥታ ወደ ቴሌግራም)</h2>
+            <p style="color: #dfb15b; font-size:13px; margin-bottom:15px;">⚠️ ማሳሰቢያ፡ የFirebase Storage ፕላን ስለማይፈቅድ፣ እዚህ የሚመዘገበው አዲስ ነገር ፎቶው ቀጥታ ወደ ቴሌግራም ቦት ይላካል።</p>
             <form id="newItemForm" onsubmit="addNewService(event)">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                     <div class="form-group">
@@ -282,7 +182,7 @@
                     <label>አጭር መግለጫ</label>
                     <textarea id="item-desc" rows="2" required placeholder="ስለ አገልግሎቱ አጭር ማብራሪያ..."></textarea>
                 </div>
-                <button type="submit" class="action-btn" id="addServiceBtn" style="background-color: #2ecc71; color: white; max-width: 220px;">💾 አገልግሎቱን መዝግብ</button>
+                <button type="submit" class="action-btn" id="addServiceBtn" style="background-color: #2ecc71; color: white; max-width: 220px;">💾 ወደ ቴሌግራም ላክና መዝግብ</button>
                 <span id="adminFormLoading" style="display:none; color:#2ecc71; margin-left:15px; font-weight:bold;">እየተጫነ ነው...</span>
             </form>
         </div>
@@ -313,20 +213,16 @@
     </div>
 
 <script>
-    // --- 1. FIREBASE ኮንፊገሬሽን ---
+    // --- 1. FIREBASE ኮንፊገሬሽን (Realtime Database ብቻ) ---
     const firebaseConfig = {
         apiKey: "AIzaSyCm6vPlapGOIn95I3NER6t1g3FHR1xKI3g",
         authDomain: "adane-hotel.firebaseapp.com",
         databaseURL: "https://adane-hotel-default-rtdb.firebaseio.com",
-        projectId: "adane-hotel",
-        storageBucket: "adane-hotel.firebasestorage.app",
-        messagingSenderId: "92228467802",
-        appId: "1:92228467802:web:609bc388c80ca75b77ec63"
+        projectId: "adane-hotel"
     };
 
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const storage = firebase.storage();
 
     // --- 2. TELEGRAM ኮንፊገሬሽን ---
     const telegramBotToken = "8946873289:AAHcg_T-YKH9inigawSa_Nf8oEhKJaNjvVI";
@@ -340,20 +236,29 @@
         listenToOrders();
     };
 
-    // Firebase ውስጥ ያሉትን አገልግሎቶች አውርዶ ማሳያ
     function listenToServices() {
         database.ref('services').on('value', (snapshot) => {
             let servicesData = [];
-            snapshot.forEach((childSnapshot) => {
-                servicesData.push({ id: childSnapshot.key, ...childSnapshot.val() });
-            });
+            snapshot.forEach((childSnapshot) => { servicesData.push({ id: childSnapshot.key, ...childSnapshot.val() }); });
             renderUserServices(servicesData);
         });
     }
 
     function renderUserServices(servicesList) {
         const grids = { rooms: 'rooms-grid', restaurant: 'restaurant-grid', pool: 'pool-grid', spa: 'spa-grid' };
-        Object.values(grids).forEach(id => { document.getElementById(id).innerHTML = ''; });
+        Object.values(grids).forEach(id => { 
+            let el = document.getElementById(id);
+            if(el) el.innerHTML = ''; 
+        });
+
+        if(servicesList.length === 0) {
+            // ነባሪ መረጃ (ባዶ ከሆነ በራሱ የሚሞላ)
+            const defaultServices = [
+                { category: 'restaurant', title: 'ልዩ ስጋ ጥብስ', price: 400, desc: 'በጥራት የተዘጋጀ ምርጥ የበሬ ስጋ ጥብስ ከነሙሉ ማቅረቢያው።', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400' }
+            ];
+            defaultServices.forEach(s => database.ref('services').push(s));
+            return;
+        }
 
         servicesList.forEach(item => {
             let gridId = grids[item.category];
@@ -361,7 +266,7 @@
 
             let cardHtml = `
                 <div class="custom-card">
-                    <div class="card-image" style="background-image: url('${item.img}');"></div>
+                    <div class="card-image" style="background-image: url('${item.img || 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400'}');"></div>
                     <div class="card-info">
                         <h3>${item.title}</h3>
                         <p>${item.desc}</p>
@@ -370,11 +275,12 @@
                     </div>
                 </div>
             `;
-            document.getElementById(gridId).innerHTML += cardHtml;
+            let gridEl = document.getElementById(gridId);
+            if(gridEl) gridEl.innerHTML += cardHtml;
         });
     }
 
-    // --- 3. ለአድሚኑ አዲስ አገልግሎት መመዝገቢያ ተግባር ---
+    // --- 3. አድሚኑ አዲስ አገልግሎት ሲጨምር (ቀጥታ ወደ ቴሌግራም ይልካል) ---
     function addNewService(e) {
         e.preventDefault();
         let category = document.getElementById('item-category').value;
@@ -391,30 +297,38 @@
         addBtn.disabled = true;
         formLoading.style.display = 'inline';
 
-        let storageRef = storage.ref('hotel_services/' + Date.now() + '_' + fileInput.name);
-        
-        storageRef.put(fileInput).then(snapshot => snapshot.ref.getDownloadURL())
-        .then(downloadURL => {
-            let newItem = { category, title, price: Number(price), desc, img: downloadURL };
+        // ፎቶውን ወደ ቴሌግራም ቦት መላክ
+        let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n📝 መግለጫ: ${desc}`;
+        let tgData = new FormData();
+        tgData.append("chat_id", hotelChatId);
+        tgData.append("photo", fileInput);
+        tgData.append("caption", adminMsg);
+
+        fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData })
+        .then(res => res.json())
+        .then(tgRes => {
+            let placeholderImg = "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400"; // ነባሪ ምስል
+            let newItem = { category, title, price: Number(price), desc, img: placeholderImg };
             return database.ref('services').push(newItem);
-        }).then(() => {
-            alert("✅ አዲስ አገልግሎት በተሳካ ሁኔታ Firebase ላይ ተጨምሯል!");
+        })
+        .then(() => {
+            alert("✅ አገልግሎቱ በተሳካ ሁኔታ ተመዝግቧል! ፎቶው ወደ ቴሌግራም ተልኳል።");
             document.getElementById('newItemForm').reset();
-            addBtn.disabled = false;
-            formLoading.style.display = 'none';
-        }).catch(err => {
-            alert("⚠️ ስህተት፡ " + err.message);
+        })
+        .catch(err => {
+            alert("⚠️ ችግር አጋጥሟል፦ " + err.message);
+        })
+        .finally(() => {
             addBtn.disabled = false;
             formLoading.style.display = 'none';
         });
     }
 
-    // --- 4. የክፍያ ሞዳል መቆጣጠሪያዎች ---
     function openTab(tabId) {
         document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
         document.getElementById(tabId).classList.add('active');
-        event.currentTarget.classList.add('active');
+        if(event) event.currentTarget.classList.add('active');
     }
 
     function openPayment(service, price) {
@@ -426,7 +340,7 @@
 
     function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
 
-    // --- 5. ፎርሙን ያለምንም መቆም ቀጥታ ወደ Firebase እና ቴሌግራም መላኪያ ---
+    // --- 4. ደንበኛው ትዕዛዝ ሲልክ (ያለ Firebase Storage ቀጥታ ወደ ቴሌግራም መላኪያ) ---
     function submitToDatabase(e) {
         e.preventDefault();
         let custName = document.getElementById('cust-name').value;
@@ -444,42 +358,36 @@
         let orderId = "ADANE-" + Math.floor(100000 + Math.random() * 900000);
         let orderTime = new Date().toLocaleString('am-ET');
 
-        // 1. መጀመሪያ ደረሰኙን Firebase Storage ላይ እንጭናለን
-        let storageRef = storage.ref('receipts/' + orderId + '_' + fileInput.name);
-        storageRef.put(fileInput).then(snapshot => snapshot.ref.getDownloadURL())
-        .then(downloadURL => {
-            
+        let messageText = `🔔 **አዲስ የሆቴል ትዕዛዝ ገብቷል!**\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n📅 ሰዓት: ${orderTime}`;
+        
+        let telegramFormData = new FormData();
+        telegramFormData.append("chat_id", hotelChatId);
+        telegramFormData.append("photo", fileInput);
+        telegramFormData.append("caption", messageText);
+
+        // 1. ፎቶውን እና ሙሉ መረጃውን ቀጥታ ወደ ቴሌግራም መላክ (ፈጣን እና አስተማማኝ)
+        fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: telegramFormData })
+        .then(res => res.json())
+        .then(tgResult => {
+            // 2. ጽሑፋዊ መረጃውን ብቻ ወደ ሪልታይም ዳታቤዝ ማስቀመጥ (ይህ ነፃ ነው፣ አይዘጋም)
             const orderData = {
                 id: orderId,
                 service: selectedServiceInfo.service,
                 customer: custName + " (ስልክ: " + custPhone + ")",
                 price: selectedServiceInfo.price,
-                receiptUrl: downloadURL,
+                receiptUrl: "የተላከው ወደ ቴሌግራም ነው", 
                 time: orderTime,
                 status: "በመጠባበቅ ላይ"
             };
-
-            // 2. መረጃውን Firebase Realtime Database ላይ መመዝገብ
-            return database.ref('orders/' + orderId).set(orderData).then(() => downloadURL);
-        })
-        .then((downloadURL) => {
-            // 3. በቀጥታ መልዕክቱን ወደ ቴሌግራም መላክ
-            let messageText = `🔔 አዲስ የሆቴል ትዕዛዝ ገብቷል!\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n📅 ሰዓት: ${orderTime}`;
-            
-            let formData = new FormData();
-            formData.append("chat_id", hotelChatId);
-            formData.append("photo", fileInput);
-            formData.append("caption", messageText);
-
-            return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: formData });
+            return database.ref('orders/' + orderId).set(orderData);
         })
         .then(() => {
             closePayment();
-            alert(`✅ ትዕዛዝዎ በተሳካ ሁኔታ ተጠናቋል!\nየትዕዛዝ መለያ ቁጥር፡ ${orderId}`);
+            alert(`✅ ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!\nየቴሌግራም ቦትዎን ያረጋግጡ።\nየትዕዛዝ መለያ ቁጥር፦ ${orderId}`);
             document.getElementById('paymentForm').reset();
         })
         .catch(err => {
-            alert("⚠️ ስህተት ተከስቷል፣ ግን መረጃው በዳታቤዝ ሊቀመጥ ይችላል፦ " + err.message);
+            alert("⚠️ የሲስተም ስህተት ገጥሟል፡ " + err.message);
         })
         .finally(() => {
             submitBtn.disabled = false;
@@ -487,7 +395,7 @@
         });
     }
 
-    // --- 6. የአድሚን ፓስወርድ ማረጋገጫ ---
+    // --- 5. የአድሚን ፓስወርድ ማረጋገጫ ---
     function checkAdminPassword() {
         let enterPop = prompt("🔐 የአስተዳዳሪውን ይለፍ ቃል ያስገቡ፦");
         if (enterPop === adminPassword) {
@@ -529,12 +437,12 @@
                     <td>${order.service}</td>
                     <td>${order.customer}</td>
                     <td style="color:#2ecc71; font-weight:bold;">${order.price} ብር</td>
-                    <td><a href="${order.receiptUrl}" target="_blank" style="color:#3498db; text-decoration:none;">🖼️ ፎቶ ክፈት</a></td>
+                    <td style="color:#dfb15b;">📲 በቴሌግራም ተልኳል</td>
                     <td>${order.time}</td>
                     <td><span class="status-badge ${isDone}">${order.status}</span></td>
                     <td>
                         <select onchange="database.ref('orders/${order.key}').update({status: this.value})" style="background:#222; color:white; border:1px solid #444; padding:3px;">
-                            <option value="በመጠባበቅ ላይ" ${order.status === 'በመጠባবেቅ ላይ' ? 'selected' : ''}>በመጠባበቅ ላይ</option>
+                            <option value="በመጠባበቅ ላይ" ${order.status === 'በመጠባበቅ ላይ' ? 'selected' : ''}>በመጠባበቅ ላይ</option>
                             <option value="ተረጋግጧል" ${order.status === 'ተረጋግጧል' ? 'selected' : ''}>አረጋግጥ</option>
                         </select>
                     </td>
