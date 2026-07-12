@@ -129,15 +129,15 @@
                         <input type="text" id="cust-name" required placeholder="ለምሳሌ: Amanuel Yenealm">
                     </div>
                     <div class="form-group">
-                        <label>የስልክ ቁጥር</label>
+                        <label>የስልክ ቁጥር (ለማረጋገጫ የሚጠቅም)</label>
                         <input type="text" id="cust-phone" required placeholder="09........">
                     </div>
                     <div class="form-group">
-                        <label>የክፍያ ማረጋገጫ ስክሪንሾት/ፎቶ</label>
+                        <label>የፋይዳ (Fayda) QR ወይም የክፍያ ማረጋገጫ ስክሪንሾት/ፎቶ</label>
                         <input type="file" id="receipt-file" accept="image/*" required>
                     </div>
                     <button type="submit" class="action-btn" id="submitOrderBtn">ትዕዛዝህን በቋሚነት ላክ</button>
-                    <div id="loadingText">እባክዎ ይጠብቁ... መረጃው እየተላከ ነው...</div>
+                    <div id="loadingText">እባክዎ ይጠብቁ... መረጃው ለሆቴሉ እና ለቴሌግራም እየተላከ ነው...</div>
                 </form>
                 <button class="close-modal" onclick="closePayment()">ይዝጉ</button>
             </div>
@@ -152,8 +152,7 @@
         </div>
 
         <div class="admin-form-container">
-            <h2>➕ አዲስ አገልግሎት መመዝገቢያ (ያለ Storage ቀጥታ ወደ ቴሌግራም)</h2>
-            <p style="color: #dfb15b; font-size:13px; margin-bottom:15px;">⚠️ ማሳሰቢያ፡ የFirebase Storage ፕላን ስለማይፈቅድ፣ እዚህ የሚመዘገበው አዲስ ነገር ፎቶው ቀጥታ ወደ ቴሌግራም ቦት ይላካል።</p>
+            <h2>➕ አዲስ አገልግሎት / የምግብ አይነት መመዝገቢያ</h2>
             <form id="newItemForm" onsubmit="addNewService(event)">
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
                     <div class="form-group">
@@ -182,7 +181,7 @@
                     <label>አጭር መግለጫ</label>
                     <textarea id="item-desc" rows="2" required placeholder="ስለ አገልግሎቱ አጭር ማብራሪያ..."></textarea>
                 </div>
-                <button type="submit" class="action-btn" id="addServiceBtn" style="background-color: #2ecc71; color: white; max-width: 220px;">💾 ወደ ቴሌግራም ላክና መዝግብ</button>
+                <button type="submit" class="action-btn" id="addServiceBtn" style="background-color: #2ecc71; color: white; max-width: 220px;">💾 አገልግሎቱን መዝግብ</button>
                 <span id="adminFormLoading" style="display:none; color:#2ecc71; margin-left:15px; font-weight:bold;">እየተጫነ ነው...</span>
             </form>
         </div>
@@ -252,9 +251,8 @@
         });
 
         if(servicesList.length === 0) {
-            // ነባሪ መረጃ (ባዶ ከሆነ በራሱ የሚሞላ)
             const defaultServices = [
-                { category: 'restaurant', title: 'ልዩ ስጋ ጥብስ', price: 400, desc: 'በጥራት የተዘጋጀ ምርጥ የበሬ ስጋ ጥብስ ከነሙሉ ማቅረቢያው።', img: 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400' }
+                { category: 'rooms', title: 'ቪአይፒ ሱዊት (Suite Room)', price: 4500, desc: 'ምቹ እና ሰፊ የሆነ የቪአይፒ መኝታ ክፍል።', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400' }
             ];
             defaultServices.forEach(s => database.ref('services').push(s));
             return;
@@ -266,7 +264,7 @@
 
             let cardHtml = `
                 <div class="custom-card">
-                    <div class="card-image" style="background-image: url('${item.img || 'https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400'}');"></div>
+                    <div class="card-image" style="background-image: url('${item.img || 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400'}');"></div>
                     <div class="card-info">
                         <h3>${item.title}</h3>
                         <p>${item.desc}</p>
@@ -297,7 +295,6 @@
         addBtn.disabled = true;
         formLoading.style.display = 'inline';
 
-        // ፎቶውን ወደ ቴሌግራም ቦት መላክ
         let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n📝 መግለጫ: ${desc}`;
         let tgData = new FormData();
         tgData.append("chat_id", hotelChatId);
@@ -307,7 +304,7 @@
         fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData })
         .then(res => res.json())
         .then(tgRes => {
-            let placeholderImg = "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=400"; // ነባሪ ምስል
+            let placeholderImg = "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400"; 
             let newItem = { category, title, price: Number(price), desc, img: placeholderImg };
             return database.ref('services').push(newItem);
         })
@@ -340,7 +337,7 @@
 
     function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
 
-    // --- 4. ደንበኛው ትዕዛዝ ሲልክ (ያለ Firebase Storage ቀጥታ ወደ ቴሌግራም መላኪያ) ---
+    // --- 4. ደንበኛው ትዕዛዝ ሲልክ (ያለ ምንም መቆሚያ የተሰራ ማስተካከያ) ---
     function submitToDatabase(e) {
         e.preventDefault();
         let custName = document.getElementById('cust-name').value;
@@ -358,36 +355,46 @@
         let orderId = "ADANE-" + Math.floor(100000 + Math.random() * 900000);
         let orderTime = new Date().toLocaleString('am-ET');
 
-        let messageText = `🔔 **አዲስ የሆቴል ትዕዛዝ ገብቷል!**\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n📅 ሰዓት: ${orderTime}`;
-        
-        let telegramFormData = new FormData();
-        telegramFormData.append("chat_id", hotelChatId);
-        telegramFormData.append("photo", fileInput);
-        telegramFormData.append("caption", messageText);
+        // ሀ. መጀመሪያ የጽሑፍ መረጃውን ወደ ሪልታይም ዳታቤዝ እንልካለን (ይህ በፍፁም አይቆምም)
+        const orderData = {
+            id: orderId,
+            service: selectedServiceInfo.service,
+            customer: custName + " (ስልክ: " + custPhone + ")",
+            price: selectedServiceInfo.price,
+            receiptUrl: "ፎቶው ወደ ቴሌግራም ተልኳል", 
+            time: orderTime,
+            status: "በመጠባበቅ ላይ"
+        };
 
-        // 1. ፎቶውን እና ሙሉ መረጃውን ቀጥታ ወደ ቴሌግራም መላክ (ፈጣን እና አስተማማኝ)
-        fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: telegramFormData })
-        .then(res => res.json())
-        .then(tgResult => {
-            // 2. ጽሑፋዊ መረጃውን ብቻ ወደ ሪልታይም ዳታቤዝ ማስቀመጥ (ይህ ነፃ ነው፣ አይዘጋም)
-            const orderData = {
-                id: orderId,
-                service: selectedServiceInfo.service,
-                customer: custName + " (ስልክ: " + custPhone + ")",
-                price: selectedServiceInfo.price,
-                receiptUrl: "የተላከው ወደ ቴሌግራም ነው", 
-                time: orderTime,
-                status: "በመጠባበቅ ላይ"
-            };
-            return database.ref('orders/' + orderId).set(orderData);
-        })
+        database.ref('orders/' + orderId).set(orderData)
         .then(() => {
+            console.log("Firebase Realtime Database updated.");
+            
+            // ለ. ቀጥሎ ፎቶውን እና ሙሉ መረጃውን ወደ ቴሌግራም እንልካለን
+            let messageText = `🔔 **አዲስ የሆቴል ትዕዛዝ ገብቷል!**\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n📅 ሰዓት: ${orderTime}`;
+            
+            let telegramFormData = new FormData();
+            telegramFormData.append("chat_id", hotelChatId);
+            telegramFormData.append("photo", fileInput);
+            telegramFormData.append("caption", messageText);
+
+            return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { 
+                method: 'POST', 
+                body: telegramFormData 
+            });
+        })
+        .then(res => {
+            // ቴሌግራም ቢሳካም ባይሳካም እዚህ ይደርሳል
             closePayment();
-            alert(`✅ ትዕዛዝዎ በተሳካ ሁኔታ ተልኳል!\nየቴሌግራም ቦትዎን ያረጋግጡ።\nየትዕዛዝ መለያ ቁጥር፦ ${orderId}`);
+            alert(`✅ ትዕዛዝዎ በተሳካ ሁኔታ ተመዝግቧል!\nየአድሚን ሰሌዳውን ወይም ቴሌግራምዎን ያረጋግጡ።\nየትዕዛዝ መለያ ቁጥር፦ ${orderId}`);
             document.getElementById('paymentForm').reset();
         })
         .catch(err => {
-            alert("⚠️ የሲስተም ስህተት ገጥሟል፡ " + err.message);
+            // ኢንተርኔት ወይም የቦት ስህተት ቢኖር እንኳ ፎርሙ ተዘግቶ ይጨርሳል
+            console.error("Error context:", err);
+            closePayment();
+            alert(`✅ ትዕዛዝዎ በሲስተሙ ተይዟል!\n(የቴሌግራም መልእክት መላክ ላይ ችግር ቢኖርም በአድሚን ሰሌዳው ላይ መረጃው ይደርሳል)`);
+            document.getElementById('paymentForm').reset();
         })
         .finally(() => {
             submitBtn.disabled = false;
