@@ -55,7 +55,7 @@
         .card-price { font-size: 18px; font-weight: bold; color: #b8860b; margin-bottom: 15px; background: #fff8eb; display: inline-block; padding: 4px 12px; border-radius: 6px; }
         
         .stock-badge { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); color: #fff; padding: 4px 10px; border-radius: 4px; font-size: 12px; border: 1px solid var(--primary-gold); }
-        .closed-pool-msg { color: #e74c3c; font-weight: bold; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 8px; border: 1px dashed #e74c3c; font-size: 16px; }
+        .closed-pool-msg { color: #e74c3c; font-weight: bold; text-align: center; padding: 20px; background: #fdf2f2; border-radius: 8px; border: 1px dashed #e74c3c; font-size: 16px; margin-bottom: 20px; }
 
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; margin-bottom: 6px; font-size: 13.5px; font-weight: bold; color: #444; }
@@ -117,7 +117,7 @@
             <button class="tab-btn" onclick="openTab('restaurant')">🍔 ሬስቶራንት & ሜኑ</button>
             <button class="tab-btn" onclick="openTab('pool')">🏊 የመዋኛ ገንዳ</button>
             <button class="tab-btn" onclick="openTab('spa')">💆 ማሳጅ & ስፓ</button>
-            <button class="tab-btn" onclick="openTab('club')">💃  nightclub / ጭፈራ ቤት</button>
+            <button class="tab-btn" onclick="openTab('club')">💃  Nightclub / ጭፈራ ቤት</button>
         </div>
 
         <div id="rooms" class="tab-content active"><div class="grid-layout" id="rooms-grid"></div></div>
@@ -394,7 +394,7 @@
         }
     }
 
-    // 🖼️ ፎቶውን በነጻ ወደ ዌብሳይት ሊንክ መቀየሪያ (ImgBB API) የተዋሃደበት አዲስ አገልግሎት መመዝገቢያ
+    // 🔄 አዲስ አገልግሎት ከጋለሪ ላይ ቀጥታ ማንበቢያና መመዝገቢያ ፈንክሽን
     function addNewService(e) {
         e.preventDefault();
         let category = document.getElementById('item-category').value;
@@ -407,22 +407,19 @@
         let addBtn = document.getElementById('addServiceBtn');
         let formLoading = document.getElementById('adminFormLoading');
 
-        if (!fileInput) return;
+        if (!fileInput) {
+            alert("⚠️... እባክዎ መጀመሪያ ከጋለሪ ላይ ፎቶ ይምረጡ!");
+            return;
+        }
 
         addBtn.disabled = true;
         formLoading.style.display = 'inline';
 
-        let imgFormData = new FormData();
-        imgFormData.append("image", fileInput);
-
-        // መጀመሪያ ፎቶውን ወደ ሊንክ እንቀይረዋለን
-        fetch("https://api.imgbb.com/1/upload?key=6d207e02198a847aa98d41a53013ef35", {
-            method: "POST",
-            body: imgFormData
-        })
-        .then(response => response.json())
-        .then(imgRes => {
-            let uploadedImgUrl = imgRes.data.url;
+        let reader = new FileReader();
+        reader.readAsDataURL(fileInput);
+        
+        reader.onload = function () {
+            let localImgUrl = reader.result; 
 
             let newItem = { 
                 category, 
@@ -430,31 +427,37 @@
                 price: Number(price), 
                 quantity: Number(qty), 
                 desc, 
-                img: uploadedImgUrl 
+                img: localImgUrl 
             };
 
-            return database.ref('services').push(newItem);
-        })
-        .then(() => {
-            let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n🔢 መነሻ ብዛት: ${qty}\n📝 መግለጫ: ${desc}`;
-            let tgData = new FormData();
-            tgData.append("chat_id", hotelChatId);
-            tgData.append("photo", fileInput);
-            tgData.append("caption", adminMsg);
+            database.ref('services').push(newItem)
+            .then(() => {
+                let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n🔢 መነሻ ብዛት: ${qty}\n📝 መግለጫ: ${desc}`;
+                let tgData = new FormData();
+                tgData.append("chat_id", hotelChatId);
+                tgData.append("photo", fileInput);
+                tgData.append("caption", adminMsg);
 
-            return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData });
-        })
-        .then(res => {
-            alert("✅ አገልግሎቱ ከራሱ ፎቶ ጋር በዋናው ገጽ ላይ ወዲያውኑ ታይቷል!");
-            document.getElementById('newItemForm').reset();
-        })
-        .catch(err => {
-            alert("⚠️ ችግር አጋጥሟል፦ " + err.message);
-        })
-        .finally(() => {
+                return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData });
+            })
+            .then(res => {
+                alert("✅ አገልግሎቱ ከጋለሪ በተመረጠው ፎቶ መሰረት ወዲያውኑ በዋናው ገጽ ላይ ወጥቷል!");
+                document.getElementById('newItemForm').reset();
+            })
+            .catch(err => {
+                alert("⚠️ ስህተት አጋጥሟል፦ " + err.message);
+            })
+            .finally(() => {
+                addBtn.disabled = false;
+                formLoading.style.display = 'none';
+            });
+        };
+
+        reader.onerror = function (error) {
+            alert("⚠️ ፎቶውን ከጋለሪ ላይ ማንበብ አልተቻለም፦ " + error);
             addBtn.disabled = false;
             formLoading.style.display = 'none';
-        });
+        };
     }
 
     function openTab(tabId) {
@@ -579,7 +582,7 @@
                     <td><span class="status-badge ${isDone}">${order.status}</span></td>
                     <td>
                         <select onchange="database.ref('orders/${order.key}').update({status: this.value})" style="background:#222; color:white; border:1px solid #444; padding:3px;">
-                            <option value="በመጠባበቅ ላይ" ${order.status === 'በመጠባбеቅ ላይ' ? 'selected' : ''}>በመጠባበቅ ላይ</option>
+                            <option value="በመጠባበቅ ላይ" ${order.status === 'በመጠባበቅ ላይ' ? 'selected' : ''}>በመጠባበቅ ላይ</option>
                             <option value="ተረጋግጧል" ${order.status === 'ተረጋግጧል' ? 'selected' : ''}>አረጋግጥ</option>
                         </select>
                     </td>
