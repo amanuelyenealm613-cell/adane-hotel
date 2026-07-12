@@ -126,7 +126,7 @@
                 <form id="paymentForm" onsubmit="submitToDatabase(event)">
                     <div class="form-group">
                         <label>የደንበኛ ሙሉ ስም</label>
-                        <input type="text" id="cust-name" required placeholder="ለምሳሌ: Amanuel Yenealm">
+                        <input type="text" id="cust-name" required placeholder="ለምሳሌ: አክሊሉ">
                     </div>
                     <div class="form-group">
                         <label>የስልክ ቁጥር (ለማረጋገጫ የሚጠቅም)</label>
@@ -256,10 +256,6 @@
         });
 
         if(servicesList.length === 0) {
-            const defaultServices = [
-                { category: 'rooms', title: 'ቪአይፒ ሱዊት (Suite Room)', price: 4500, desc: 'ምቹ እና ሰፊ የሆነ የቪአይፒ መኝታ ክፍል።', img: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400' }
-            ];
-            defaultServices.forEach(s => database.ref('services').push(s));
             return;
         }
 
@@ -283,6 +279,7 @@
         });
     }
 
+    // 🔥 ማስተካከያ የተደረገበት የአዲስ አገልግሎት መመዝገቢያ (ቅደም ተከተሉ ተስተካክሏል)
     function addNewService(e) {
         e.preventDefault();
         let category = document.getElementById('item-category').value;
@@ -299,21 +296,23 @@
         addBtn.disabled = true;
         formLoading.style.display = 'inline';
 
-        let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n📝 መግለጫ: ${desc}`;
-        let tgData = new FormData();
-        tgData.append("chat_id", hotelChatId);
-        tgData.append("photo", fileInput);
-        tgData.append("caption", adminMsg);
+        // ለጊዜው በነባሪ የምስል ሊንክ Firebase ላይ መጀመሪያ ሴቭ እናደርገዋለን (ወዲያው ዋናው ፔጅ ላይ እንዲመጣ)
+        let defaultImg = "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400";
+        let newItem = { category, title, price: Number(price), desc, img: defaultImg };
 
-        fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData })
-        .then(res => res.json())
-        .then(tgRes => {
-            let placeholderImg = "https://images.unsplash.com/photo-1540541338287-41700207dee6?q=80&w=400"; 
-            let newItem = { category, title, price: Number(price), desc, img: placeholderImg };
-            return database.ref('services').push(newItem);
-        })
+        database.ref('services').push(newItem)
         .then(() => {
-            alert("✅ አገልግሎቱ በተሳካ ሁኔታ ተመዝግቧል!");
+            // በFirebase ላይ በተሳካ ሁኔታ ከተመዘገበ በኋላ ወደ ቴሌግራም ማረጋገጫውን ይልካል
+            let adminMsg = `➕ **አዲስ አገልግሎት መዝገብ** ➕\n\n🗂️ ዘርፍ: ${category}\n📌 ስም: ${title}\n💰 ዋጋ: ${price} ብር\n📝 መግለጫ: ${desc}`;
+            let tgData = new FormData();
+            tgData.append("chat_id", hotelChatId);
+            tgData.append("photo", fileInput);
+            tgData.append("caption", adminMsg);
+
+            return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendPhoto`, { method: 'POST', body: tgData });
+        })
+        .then(res => {
+            alert("✅ አገልግሎቱ በዋናው ገጽ ላይ ወዲያውኑ ታይቷል እንዲሁም ወደ ቴሌግራም ተልኳል!");
             document.getElementById('newItemForm').reset();
         })
         .catch(err => {
@@ -341,12 +340,11 @@
 
     function closePayment() { document.getElementById('paymentModal').style.display = 'none'; }
 
-    // --- 4. የደንበኛ ማዘዣ ተግባር (በጥንቃቄ የተገናኘ) ---
     function submitToDatabase(e) {
         e.preventDefault();
         let custName = document.getElementById('cust-name').value;
         let custPhone = document.getElementById('cust-phone').value;
-        let receiptLink = document.getElementById('receipt-link').value; // በትክክል ተገናኝቷል!
+        let receiptLink = document.getElementById('receipt-link').value;
         let fileInput = document.getElementById('fayda-file').files[0];
 
         let submitBtn = document.getElementById('submitOrderBtn');
@@ -360,7 +358,6 @@
         let orderId = "ADANE-" + Math.floor(100000 + Math.random() * 900000);
         let orderTime = new Date().toLocaleString('am-ET');
 
-        // ሀ. መጀመሪያ መረጃውን ወደ Firebase Realtime Database እንልካለን
         const orderData = {
             id: orderId,
             service: selectedServiceInfo.service,
@@ -373,7 +370,6 @@
 
         database.ref('orders/' + orderId).set(orderData)
         .then(() => {
-            // ለ. በመቀጠል የፋይዳ ፎቶውን እና ሙሉ መረጃውን ወደ ቴሌግራም እንልካለን
             let messageText = `🔔 **አዲስ የሆቴል ትዕዛዝ (በፋይዳ የተረጋገጠ)**\n\n🆔 የትዕዛዝ ቁጥር: ${orderId}\n🛏️ አገልግሎት: ${selectedServiceInfo.service}\n💰 ዋጋ: ${selectedServiceInfo.price} ETB\n👤 ደንበኛ: ${custName}\n📞 ስልክ: ${custPhone}\n🔗 የደረሰኝ ሊንክ/ቁጥር: ${receiptLink}\n📅 ሰዓት: ${orderTime}`;
             
             let telegramFormData = new FormData();
